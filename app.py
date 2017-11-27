@@ -15,7 +15,15 @@ def homepage():
 def meal():
     date = datetime.now()
     url = f'http://dsm2015.cafe24.com:3000/meal/{date.strftime("%Y-%m-%d")}'
-    res = json.loads(urllib.request.urlopen(url).read())
+    try:
+        bs = urllib.request.urlopen(url).read()
+        res = json.loads(bs)
+    except:
+        msg = {
+            'response_type': 'in_channel',
+            'text': '한심한 DMS 급식 또 터졌음 :thinking:\n왜냐하면 내가 잘못됐을리는 없거든'
+        }
+        return Response(json.dumps(msg), mimetype='application/json')
 
     msg = {
         'response_type': 'in_channel',
@@ -44,7 +52,8 @@ def meal():
             }
         ]
     }
-    return jsonify(msg)
+    return Response(json.dumps(msg), mimetype='application/json')
 
 if __name__ == '__main__':
-    app.run(debug=True, use_reloader=True)
+    # app.run(debug=True, use_reloader=True)
+    meal()
