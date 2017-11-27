@@ -11,7 +11,10 @@ def homepage():
 
 @app.route('/slack/command/meal', methods=['POST'])
 def meal():
-    msg = {'text': '너에게 알려줄 급식따윈 없다'}
+    msg = {
+        'response_type': 'in_channel',
+        'text': '너에게 알려줄 급식따윈 없다'
+    }
     return jsonify(msg)
 
 if __name__ == '__main__':
