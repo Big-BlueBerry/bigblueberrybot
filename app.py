@@ -9,5 +9,9 @@ def homepage():
     <p>It is currently {time}.</p>
     """.format(time=datetime.now())
 
+@app.route('/slack/command/meal')
+def meal():
+    return '너에게 알려줄 급식따윈 없다'
+
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=True)
