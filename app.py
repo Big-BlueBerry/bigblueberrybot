@@ -13,7 +13,7 @@ VERIFICATION_TOKEN = os.environ.get('VERIFICATION_TOKEN')
 members_info = {}
 
 with open('memberinfo.txt', 'w+') as f:
-    for l in f.readlines:
+    for l in f.readlines():
         ID, _id, pw = l.split(' ')
         members_info[ID] = _id, pw
 
@@ -75,6 +75,10 @@ def login():
 
 @app.route('/slack/command/home', methods=['POST'])
 def janryu():
+    pass
+
+@app.route('/slack/command/more', methods=['POST'])
+def more():
     pass
 
 if __name__ == '__main__':
