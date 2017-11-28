@@ -63,13 +63,16 @@ def login():
         }
         return Response(json.dumps(msg), mimetype='application/json')
     _id, pw = text.split(' ')
+    print(f'{form["user"]} 한테서 아이디 {_id} 비번 {pw} 받음')
     try:
         s = dms.login(_id, pw)
     except Exception as ex:
+        print('로그인중 에러', ex)
         msg = {"text": ex.args[0]}
         return Response(json.dumps(msg), mimetype='application/json')
     set_userinfo(form['user']['id'], _id, pw)
     msg = {"text": "로그인 되었음 굳굳"}
+    print(f'{form["user"]} 로그인 성공')
     
     return Response(json.dumps(msg), mimetype='application/json')
 
@@ -79,6 +82,13 @@ def janryu():
 
 @app.route('/slack/command/more', methods=['POST'])
 def more():
+    form = request.form['payload']
+    text = form['text']
+
+    if text.count(' ') != 1:
+        msg = {
+            'text'
+        }
     pass
 
 if __name__ == '__main__':
