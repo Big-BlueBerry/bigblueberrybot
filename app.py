@@ -14,7 +14,7 @@ def homepage():
 
 @app.route('/slack/confirm', methods=['POST'])
 def confirm():
-    print(request.json)
+    print(request.form)
 
 @app.route('/slack/command/meal', methods=['POST'])
 def meal():
