@@ -27,7 +27,7 @@ def confirm():
         msg = {
             "text": '응 안전하지 않아~' if answ else '잘 아는군'
         }
-        return Response(msg, mimetype='application/json')
+        return Response(json.dumps(msg), mimetype='application/json')
     print(f'토큰이 다름!!\n받은거: {request.form.get("token")}\n예상한거: {VERIFICATION_TOKEN}')
 
 @app.route('/slack/command/meal', methods=['POST'])
