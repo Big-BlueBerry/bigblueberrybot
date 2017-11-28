@@ -1,7 +1,8 @@
-from flask import Flask, Response, jsonify
-from datetime import datetime
+from flask import Flask, Response, jsonify, request
+from datetime import date
 import urllib.request
 import json
+import dms
 app = Flask(__name__)
 
 @app.route('/')
@@ -9,51 +10,53 @@ def homepage():
     return """
     <h1>Hello heroku</h1>
     <p>It is currently {time}.</p>
-    """.format(time=datetime.now())
+    """.format(time=date.today())
 
 @app.route('/slack/command/meal', methods=['POST'])
 def meal():
-    date = datetime.now()
-    url = f'http://dsm2015.cafe24.com:3000/meal/{date.strftime("%Y-%m-%d")}'
+    print(request.form.get('text'))
     try:
-        bs = urllib.request.urlopen(url).read()
-        res = json.loads(bs)
-    except:
-        msg = {
-            'response_type': 'in_channel',
-            'text': '한심한 DMS 급식 또 터졌음 :thinking:\n왜냐하면 내가 잘못됐을리는 없거든'
-        }
+        res = dms.meal(date.today())
+    except Exception as e:
+        print('err', e.args)
+        msg = {'response_type': 'in_channel', 'text': f'에러:blush::gun:\n{e.args[0]}'}
         return Response(json.dumps(msg), mimetype='application/json')
+    return Response(res, mimetype='application/json')
 
+@app.route('/slack/command/login', methods=['POST'])
+def login():
     msg = {
-        'response_type': 'in_channel',
+        "text": "DMS에 로그인할거냐?",
         "attachments": [
             {
-                "fallback": "",
-                "pretext": "오늘자 급식:rice:",
-                "fields": [
+                "text": "비밀번호를 평문으로 맡겨도 될 만큼 안전할 거 같냐?",
+                "fallback": "안전할 거 같아?",
+                "callback_id": "login_answer",
+                "color": "#ff0000",
+                "attachment_type": "default",
+                "actions": [
                     {
-                        "title": "아침",
-                        "value": '\n'.join(res['breakfast']),
-                        "short": True
+                        "name": "answer",
+                        "text": "네!!!",
+                        "type": "button",
+                        "style": "danger",
+                        "value": "yes"
                     },
                     {
-                        "title": "점심",
-                        "value": '\n'.join(res['lunch']),
-                        "short": True
-                    },
-                    {
-                        "title": "저녁",
-                        "value": '\n'.join(res['dinner']),
-                        "short": True
+                        "name": "answer",
+                        "text": "아뇨..",
+                        "type": "button",
+                        "value": "no"
                     }
-                    ],
-                "color": "#7CD197"
+                ]
             }
         ]
     }
     return Response(json.dumps(msg), mimetype='application/json')
 
+@app.route('/slack/command/home', methods=['POST'])
+def janryu():
+    pass
+
 if __name__ == '__main__':
-    # app.run(debug=True, use_reloader=True)
-    meal()
+    app.run(debug=True, use_reloader=True)
