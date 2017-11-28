@@ -12,6 +12,10 @@ def homepage():
     <p>It is currently {time}.</p>
     """.format(time=date.today())
 
+@app.route('/slack/confirm', methods=['POST'])
+def confirm():
+    print(request.json)
+
 @app.route('/slack/command/meal', methods=['POST'])
 def meal():
     print(request.form.get('text'))
