@@ -10,6 +10,18 @@ app = Flask(__name__)
 slack = Slacker(os.environ.get('SLACK_TOKEN'))
 VERIFICATION_TOKEN = os.environ.get('VERIFICATION_TOKEN')
 
+members_info = {}
+
+with open('memberinfo.txt', 'w+') as f:
+    for l in f.readlines:
+        ID, _id, pw = l.split(' ')
+        members_info[ID] = _id, pw
+
+def set_userinfo(user_id, _id, pw):
+    members_info[user_id] = _id, pw
+    with open('memberinfo.txt', 'a') as f:
+        f.write(f'{user_id} {_id} {pw}\n')
+
 @app.route('/')
 def homepage():
     return """
@@ -43,33 +55,22 @@ def meal():
 
 @app.route('/slack/command/login', methods=['POST'])
 def login():
-    msg = {
-        "text": "DMS에 로그인할거냐?",
-        "attachments": [
-            {
-                "text": "비밀번호를 평문으로 맡겨도 될 만큼 안전할 거 같냐?",
-                "fallback": "안전할 거 같아?",
-                "callback_id": "login_answer",
-                "color": "#ff0000",
-                "attachment_type": "default",
-                "actions": [
-                    {
-                        "name": "answer",
-                        "text": "네!!!",
-                        "type": "button",
-                        "style": "danger",
-                        "value": "yes"
-                    },
-                    {
-                        "name": "answer",
-                        "text": "아뇨..",
-                        "type": "button",
-                        "value": "no"
-                    }
-                ]
-            }
-        ]
-    }
+    form = json.loads(request.form['payload'])
+    text = form['text']
+    if text.count(' ') != 1:
+        msg = {
+            "text": "사용법: /로그인 아이디 비밀번호 (아이디와 비밀번호에 공백 없어야함)"
+        }
+        return Response(json.dumps(msg), mimetype='application/json')
+    _id, pw = text.split(' ')
+    try:
+        s = dms.login(_id, pw)
+    except Exception as ex:
+        msg = {"text": ex.args[0]}
+        return Response(json.dumps(msg), mimetype='application/json')
+    set_userinfo(form['user']['id'], _id, pw)
+    msg = {"text": "로그인 되었음 굳굳"}
+    
     return Response(json.dumps(msg), mimetype='application/json')
 
 @app.route('/slack/command/home', methods=['POST'])
