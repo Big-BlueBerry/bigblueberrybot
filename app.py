@@ -3,7 +3,12 @@ from datetime import date
 import urllib.request
 import json
 import dms
+import os
+from slacker import Slacker
 app = Flask(__name__)
+
+slack = Slacker(os.environ.get('SLACK_TOKEN'))
+VERIFICATION_TOKEN = os.environ.get('VERIFICATION_TOKEN')
 
 @app.route('/')
 def homepage():
@@ -14,7 +19,14 @@ def homepage():
 
 @app.route('/slack/confirm', methods=['POST'])
 def confirm():
-    print(request.form)
+    if request.form.get('token') == VERIFICATION_TOKEN:
+        chan = request.form.get('channel').get('name')
+        answ = request.form.get('actions')[0].get('value') == 'yes'
+        msg = {
+
+            "text": '응 안전하지 않아~' if answ else '잘 아는군'
+        }
+        return Response(msg, mimetype='application/json')
 
 @app.route('/slack/command/meal', methods=['POST'])
 def meal():
