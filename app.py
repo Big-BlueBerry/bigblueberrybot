@@ -19,7 +19,8 @@ def homepage():
 
 @app.route('/slack/confirm', methods=['POST'])
 def confirm():
-    print(request.form)
+    print(request.json)
+    print(json.loads(request.json))
     # if request.form.get('token') == VERIFICATION_TOKEN:
     chan = request.form.get('channel').get('name')
     answ = request.form.get('actions')[0].get('value') == 'yes'
