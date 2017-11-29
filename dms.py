@@ -9,9 +9,42 @@ LOGIN_STUDENT = 'http://dsm2015.cafe24.com/account/login/student'
 STUDY_MORE_11 = 'http://dsm2015.cafe24.com/apply/extension/11'
 MEAL_URL = f'{BASE_URL}meal/'
 
-def login(id: str, pw: str) -> str:
+CLASSIDS = {
+    '가': 1,
+    '가온': 1,
+    '가온실': 1,
+    '나': 2,
+    '나온': 2,
+    '나온실': 2,
+    '다': 3,
+    '다온': 3,
+    '다온실': 3,
+    '라': 4,
+    '라온': 4,
+    '라온실': 4,
+    '3': 5,
+    '삼': 5,
+    '3층': 5,
+    '삼층': 5,
+    '4': 6,
+    '사': 6,
+    '4층': 6,
+    '사층': 6,
+    '5': 7,
+    '오': 7,
+    '5층': 7,
+    '오층': 7
+}
+
+def classid_from_name(name: str):
+    if name in CLASSIDS.keys():
+        return name
+    else:
+        raise Exception('어디인지 모르겠네요')
+
+def login(_id: str, pw: str) -> str:
     s = requests.Session()
-    req = s.post(LOGIN_STUDENT, {'id': id, 'password': pw})
+    req = s.post(LOGIN_STUDENT, {'id': _id, 'password': pw})
     if req.status_code == 201:
         return s
     if req.status_code == 204:
@@ -21,10 +54,13 @@ def login(id: str, pw: str) -> str:
 def study_more(s: requests.Session, room: int, seat: int):
     req = s.put(STUDY_MORE_11, {'class': room, 'seat': seat})
     if req.status_code == 204:
-        raise Exception('응 늦었어~')
+        raise Exception('응 연장시간 아니야~')
     if req.status_code == 200:
         return req
     raise Exception('오류남.. 아마도 걔네가 잘못한거임')
+
+def cancle_more(s: requests.Session):
+    pass
 
 def meal(date: date) -> str:
     url = f'{MEAL_URL}{str(date)}'
