@@ -71,16 +71,16 @@ def login():
         }
         return create_response(msg)
     _id, pw = text.split(' ')
-    print(f'{form["user"]} 한테서 아이디 {_id} 비번 {pw} 받음')
+    print(f'{form["user_name"]} 한테서 아이디 {_id} 비번 {pw} 받음')
     try:
         s = dms.login(_id, pw)
     except Exception as ex:
         print('로그인중 에러', ex)
         msg = {"text": ex.args[0]}
         return create_response(msg)
-    set_userinfo(form['user']['id'], _id, pw)
+    set_userinfo(form['user_id'], _id, pw)
     msg = {"text": "로그인 되었음 굳굳"}
-    print(f'{form["user"]} 로그인 성공')
+    print(f'{form["user_name"]} 로그인 성공')
     return create_response(msg)
 
 @app.route('/slack/command/home', methods=['POST'])
@@ -96,7 +96,7 @@ def more():
     if text.count(' ') != 1:
         if text == '취소':
             try:
-                dms.cancle_more(form['user']['id'])
+                dms.cancle_more(dms.login(*form['user_id']))
             except Exception as ex:
                 msg = {"text": ex.args[0]}
                 return create_response(msg)
@@ -108,7 +108,7 @@ def more():
             }
             return create_response(msg)
 
-    user = form['user']['id']
+    user = form['user_id']
     _class, seat = text.split(' ')
     session = dms.login(*members_info[user])
     try:
