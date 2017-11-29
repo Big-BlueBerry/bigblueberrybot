@@ -62,7 +62,7 @@ def study_more(s: requests.Session, room: int, seat: int):
 def cancle_more(s: requests.Session):
     pass
 
-def meal(date: date) -> str:
+def meal(date: date) -> dict:
     url = f'{MEAL_URL}{str(date)}'
     print(url)
     try:
@@ -98,7 +98,7 @@ def meal(date: date) -> str:
             }
         ]
     }
-    return json.dumps(msg)
+    return msg
 
 def test_login():
     return login('dudcksdldjfrnf', 'dudcksdldjfrnf')

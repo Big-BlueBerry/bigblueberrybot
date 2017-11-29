@@ -62,7 +62,7 @@ def meal():
 
 @app.route('/slack/command/login', methods=['POST'])
 def login():
-    form = json.loads(request.form['payload'])
+    form = request.form
     print(form)
     text = form['text']
     if text.count(' ') != 1:
@@ -90,7 +90,7 @@ def janryu():
 @app.route('/slack/command/more', methods=['POST'])
 def more():
     print(request.form)
-    form = json.loads(request.form['payload'])
+    form = request.form
     text = form['text']
 
     if text.count(' ') != 1:
