@@ -5,7 +5,7 @@ import json
 import dms
 import os
 import apscheduler
-from slacker import Slacker
+from slacker import Slackeㄴr
 from apscheduler.schedulers.blocking import BlockingScheduler
 
 sched = BlockingScheduler()
@@ -145,19 +145,14 @@ def more():
             return create_response(msg)
         msg = {"text": "취소했음"}
         return create_response(msg)
-    else:
-        msg = {
-            'text': '사용법: `/연장 (교실) (자리)` 으로 연장 신청\n`/연장 (교실) (자리) 자동` 으로 자동연장 신청\n`/연장 자동 취소` 로 자동연장 취소\n`/연장 취소` 로 연장 취소'
-        }
-        return create_response(msg)
 
-    if text == '자동 취소':
+    elif text == '자동 취소':
         remove_autoextend(form['user_id'])
         msg = {"text": "너의 자동 연장이 취소됐다"}
         return create_response(msg)
 
     user = form['user_id']
-    if text.count(' ') == 1:
+    if text.count(' ') == 1 and text != ' ':
         _class, seat = text.split(' ')
     elif text.count(' ') == 2:
         _class, seat, auto = text.aplit(' ')
@@ -165,6 +160,11 @@ def more():
             set_autoextend(user, _class, seat)
             msg = {"text": "너의 자동 연장이 등록되었다"}
             return create_response(msg)
+    else:
+        msg = {
+            'text': '사용법: `/연장 (교실) (자리)` 으로 연장 신청\n`/연장 (교실) (자리) 자동` 으로 자동연장 신청\n`/연장 자동 취소` 로 자동연장 취소\n`/연장 취소` 로 연장 취소'
+        }
+        return create_response(msg)
     session = dms.login(*members_info[user])
     try:
         dms.study_more(session, _class, seat)
