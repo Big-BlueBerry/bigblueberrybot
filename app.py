@@ -5,7 +5,7 @@ import json
 import dms
 import os
 import apscheduler
-from slacker import Slackeㄴr
+from slacker import Slacker
 from apscheduler.schedulers.blocking import BlockingScheduler
 
 sched = BlockingScheduler()
@@ -52,7 +52,7 @@ def remove_autoextend(user_id):
             _class, seat = auto_extend_members[ID]
             f.write(f'{ID} {_class} {seat}\n')
 
-@sched.scheduled_job('cron', day_of_week='mon-fri', hour=19)
+@sched.scheduled_job('cron', day_of_week='mon-fri', hour=18)
 def study_more_all_automembers():
     for user in auto_extend_members.keys():
         _class, seat = auto_extend_members[user]
