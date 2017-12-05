@@ -155,7 +155,7 @@ def more():
     if text.count(' ') == 1 and text != ' ':
         _class, seat = text.split(' ')
     elif text.count(' ') == 2:
-        _class, seat, auto = text.aplit(' ')
+        _class, seat, auto = text.split(' ')
         if auto == '자동':
             set_autoextend(user, _class, seat)
             msg = {"text": "너의 자동 연장이 등록되었다"}
