@@ -76,7 +76,7 @@ def meal(date: date) -> dict:
         "attachments": [
             {
                 "fallback": "",
-                "pretext": "오늘자 급식:rice:",
+                "pretext": f"{date} 급식:rice:",
                 "fields": [
                     {
                         "title": "아침",
